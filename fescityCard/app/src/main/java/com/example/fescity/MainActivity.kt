@@ -1,14 +1,15 @@
-package com.example.fescity
+package com.example.fescityCard
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,15 +17,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.fescity.ui.theme.FesCityTheme
-import com.example.fescity.R // Import R file for drawable resources
+import com.example.fescity.ui.theme.FesCityCardTheme
+import com.example.fescity.R
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            FesCityTheme {
+            FesCityCardTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     MainContent(
                         modifier = Modifier.padding(innerPadding)
@@ -37,6 +38,17 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainContent(modifier: Modifier = Modifier) {
+    // List of images to cycle through
+    val imageList = listOf(
+        R.drawable.images_khli3,    // First image (lkhli3)
+        R.drawable.images_khli4,    // Second image
+        R.drawable.images_khli5,    // Third image
+        R.drawable.images_khli6     // Fourth image
+    )
+
+    // Hold the index of the current image
+    var currentIndex by remember { mutableStateOf(0) }
+
     Box(
         modifier = modifier.fillMaxSize()
     ) {
@@ -44,8 +56,8 @@ fun MainContent(modifier: Modifier = Modifier) {
         Image(
             painter = painterResource(id = R.drawable.fes), // Reference to the "fes" image
             contentDescription = "Background image of Fes",
-            modifier = Modifier.fillMaxSize(), // Fills the entire screen
-            contentScale = ContentScale.Crop // Adjusts the scaling to fill the background
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
         )
 
         // Foreground content
@@ -56,13 +68,17 @@ fun MainContent(modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // lkhli3 image
+            // Image that changes on click
             Image(
-                painter = painterResource(id = R.drawable.images_khli3), // lkhli3 image in drawable folder
+                painter = painterResource(id = imageList[currentIndex]), // Current image
                 contentDescription = "Image of lkhli3",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(250.dp), // Adjust the height as needed
+                    .height(250.dp)
+                    .clickable {
+                        // On click, change to the next image
+                        currentIndex = (currentIndex + 1) % imageList.size
+                    },
                 contentScale = ContentScale.Crop
             )
 
@@ -81,7 +97,7 @@ fun MainContent(modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun MainContentPreview() {
-    FesCityTheme {
+    FesCityCardTheme {
         MainContent()
     }
 }
